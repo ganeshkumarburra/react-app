@@ -1,0 +1,15 @@
+name: CI
+on:
+  pull_request:
+    branches: [develop]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pulling the code
+        uses: actions/checkout@v3
+      - run: npm install
+      - run: npm run format:check
+      - run: npm run test -- --coverage
+        env:
+          CI: true
