@@ -1,0 +1,52 @@
+name: CI
+on:
+  pull_request:
+    branches: [develop, master]
+  push:
+    branches:
+      - develop
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pulling the code
+        uses: actions/checkout@v3
+      - name: Caching Node modules
+        uses: actions/cache@v3
+        id: npm-cache
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run test -- --coverage
+        env:
+          CI: true
+      - name: Upload test coverage artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-coverage
+          path: coverage
+      - name: Build the project
+        if: github.event_name == 'push'
+        run: npm run build
+      - name: Upload build folder artifact
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-package
+          path: build
+      - name: Create a relase
+        if: github.event_name == 'push' && github.ref == 'refs/head/master'
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Deploy the project in the staging server
+        if: github.event_name == 'push'
+        run: npx surge --domain foolish-bikes.surge.sh --project ./build
+        env:
+          SURGE_LOGIN: ${{secrets.SURGE_LOGIN}}
+          SURGE_TOKEN: ${{secrets.SURGE_TOKEN}}
