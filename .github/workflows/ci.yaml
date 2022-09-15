@@ -21,7 +21,7 @@ jobs:
         run: npm run build
       - name: Deploy the project in the staging server
         if: github.event_name == 'push'
-        run: surge --domain foolish-bikes.surge.sh --project ./build
+        run: npx surge --domain foolish-bikes.surge.sh --project ./build
         env:
           SURGE_LOGIN: ${{secrets.SURGE_LOGIN}}
           SURGE_TOKEN: ${{secrets.SURGE_TOKEN}}
