@@ -20,7 +20,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - run: npm ci
-      - run: npm run format:checkf
+      - run: npm run format:check
       - run: npm run test -- --coverage
         env:
           CI: true
