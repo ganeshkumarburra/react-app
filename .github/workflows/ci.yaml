@@ -24,9 +24,20 @@ jobs:
       - run: npm run test -- --coverage
         env:
           CI: true
+      - name: Upload test coverage artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-coveragef
+          path: coverage
       - name: Build the project
         if: github.event_name == 'push'
         run: npm run build
+      - name: Upload build folder artifact
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-package
+          path: build
       - name: Deploy the project in the staging server
         if: github.event_name == 'push'
         run: npx surge --domain foolish-bikes.surge.sh --project ./build
