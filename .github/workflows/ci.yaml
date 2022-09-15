@@ -17,10 +17,10 @@ jobs:
         env:
           CI: true
       - name: Build the project
-        if: github.event_name == "push"
+        if: github.event_name == 'push'
         run: npm run build
       - name: Deploy the project in the staging server
-        if: github.event_name == "push"
+        if: github.event_name == 'push'
         run: surge --domain foolish-bikes.surge.sh --project ./build
         env:
           SURGE_LOGIN: ${{secrets.SURGE_LOGIN}}
