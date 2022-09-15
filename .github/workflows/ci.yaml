@@ -40,7 +40,7 @@ jobs:
           name: build-package
           path: build
       - name: Create a relase
-        if: github.event_name == 'push' && github.ref == 'refs/head/master'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
