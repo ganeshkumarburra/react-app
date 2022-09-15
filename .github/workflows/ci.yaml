@@ -11,8 +11,16 @@ jobs:
     steps:
       - name: Pulling the code
         uses: actions/checkout@v3
-      - run: npm install
-      - run: npm run format:check
+      - name: Caching Node modules
+        uses: actions/cache@v3
+        id: npm-cache
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - run: npm ci
+      - run: npm run format:checkf
       - run: npm run test -- --coverage
         env:
           CI: true
