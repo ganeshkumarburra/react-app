@@ -61,6 +61,7 @@ jobs:
         run: npx surge --domain sedate-judge.surge.sh --project ./build
   download-artifacts:
     runs-on: ubuntu-latest
+    needs: [build]
     steps:
       - name: Downloading artifacts
         uses: actions/download-artifact@v3
